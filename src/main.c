@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <objc/runtime.h>
 #include <objc/message.h>
 
@@ -9,6 +10,9 @@ extern int UIApplicationMain(
 	id principalClassName,
 	id delegateClassName
 );
+
+typedef id (*f_stringWithUTF8String)(id, SEL, const char * source);
+typedef BOOL (*f_containsString)(id, SEL, id other_NSString);
 
 int main(const int argc, char** argv) {
 	print_s("---START---");
@@ -23,7 +27,17 @@ int main(const int argc, char** argv) {
 	Class AppDelegate = objc_allocateClassPair(UIResponder, "AppDelegate", 0);
 	print_class(AppDelegate);
 
-	UIApplicationMain(argc, argv, nil, nil);
+	SEL stringWithUTF8String_sel = sel_registerName("stringWithUTF8String:");
+	f_stringWithUTF8String stringWithUTF8String = (f_stringWithUTF8String)objc_msgSend;
+
+	id string_instance = stringWithUTF8String((id)NSString, stringWithUTF8String_sel, "AppDelegate");
+	id string_instance2 = stringWithUTF8String((id)NSString, stringWithUTF8String_sel, "Del");
+
+	BOOL contains = ((f_containsString) objc_msgSend)(string_instance, sel_registerName("containsString:"), string_instance2);
+	printf("contains: %d\n", contains);
+
+
+	// UIApplicationMain(argc, argv, nil, nil);
 
 	print_s("After main");
 	while (1) {}

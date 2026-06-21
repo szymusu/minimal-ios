@@ -21,6 +21,14 @@ void print_class(Class class) {
 #endif
 }
 
+void print_ptr(void* ptr) {
+#if TARGET_OS_IPHONE
+	os_log(OS_LOG_DEFAULT, "%p", ptr);
+#else
+	printf("%p\n", ptr);
+#endif
+}
+
 void print_args(const int argc, char** argv) {
 	char arg_count[32];
 	snprintf(arg_count, 32, "argc: %d", argc);
