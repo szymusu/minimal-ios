@@ -19,10 +19,9 @@ void ensure_ready() {
 NSString NSString_make(const char* source) {
 	ensure_ready();
 
-	return  (
-		(f_stringWithUTF8String)objc_msgSend)(
-			(id)NSString_class,
-			stringWithUTF8String_sel,
-			source
+	return  ((f_stringWithUTF8String)objc_msgSend)(
+		(id)NSString_class,
+		stringWithUTF8String_sel,
+		source
 	);
 }

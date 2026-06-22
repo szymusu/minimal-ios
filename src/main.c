@@ -4,6 +4,7 @@
 
 #include "NSString.h"
 #include "print.h"
+#include "props.h"
 
 extern int UIApplicationMain(
 	int argc,
@@ -12,28 +13,16 @@ extern int UIApplicationMain(
 	id delegateClassName
 );
 
-typedef id (*f_noArgs)(id, SEL);
-typedef uint32_t (*f_noArgs32)(id, SEL);
-
-id getProperty(id object, const char* property_name) {
-	SEL getter_selector = sel_registerName(property_name);
-	return ((f_noArgs)objc_msgSend)(object, getter_selector);
-}
-
-uint32_t getProperty32(id object, const char* property_name) {
-	SEL getter_selector = sel_registerName(property_name);
-	return ((f_noArgs32)objc_msgSend)(object, getter_selector);
-}
-
 BOOL didFinishLaunch(id self, SEL _cmd, id application, id options) {
 	print_s("inside did finish launch");
 	print_class(object_getClass(self));
 	print_class(object_getClass(application));
 	print_class(object_getClass(options));
 
-	print_class(object_getClass(getProperty(application, "delegate")));
-	print_u32(getProperty32(application, "applicationState"));
-	print_u32(getProperty32(application, "backgroundRefreshStatus"));
+	print_class(object_getClass(prop_get_obj(application, "delegate")));
+	print_u32(prop_get_long(application, "applicationState"));
+	print_u32(prop_get_long(application, "backgroundRefreshStatus"));
+	print_class(object_getClass(prop_get_obj(application, "inputAssistantItem")));
 
 	return true;
 }
@@ -50,19 +39,6 @@ int main(const int argc, char** argv) {
 	}
 
 	Class AppDelegate = objc_allocateClassPair(UIResponder, "AppDelegate", 0);
-	Protocol* UIApplicationDelegate = objc_getProtocol("UIApplicationDelegate");
-	if (class_addProtocol(AppDelegate, UIApplicationDelegate)) {
-		print_s("Protocol YES");
-	}
-	else {
-		print_s("Protocol NO");
-	}
-	if (class_conformsToProtocol(AppDelegate, UIApplicationDelegate)) {
-		print_s("Protocol YES");
-	}
-	else {
-		print_s("Protocol NO");
-	}
 
 	SEL didFinishLaunch_sel = sel_registerName("application:didFinishLaunchingWithOptions:");
 	class_addMethod(AppDelegate, didFinishLaunch_sel, (IMP) didFinishLaunch, "c@:@@");

@@ -16,7 +16,10 @@ add_executable(minimal_ios
         src/print.c
         src/print.h
         src/NSString.c
-        src/NSString.h)
+        src/NSString.h
+        src/function.h
+        src/props.c
+        src/props.h)
 
 target_link_libraries(${PROJECT_NAME} "-framework Foundation")
 #target_link_libraries(${PROJECT_NAME} "-framework UIKit")
