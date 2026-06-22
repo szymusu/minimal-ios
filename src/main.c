@@ -2,6 +2,7 @@
 #include <objc/runtime.h>
 #include <objc/message.h>
 
+#include "NSString.h"
 #include "print.h"
 
 extern int UIApplicationMain(
@@ -10,9 +11,6 @@ extern int UIApplicationMain(
 	id principalClassName,
 	id delegateClassName
 );
-
-typedef id (*f_stringWithUTF8String)(id, SEL, const char * source);
-typedef BOOL (*f_containsString)(id, SEL, id other_NSString);
 
 typedef id (*f_noArgs)(id, SEL);
 typedef uint32_t (*f_noArgs32)(id, SEL);
@@ -44,9 +42,6 @@ int main(const int argc, char** argv) {
 	log_init();
 	print_banner();
 
-	Class NSString = objc_getClass("NSString");
-	print_class(NSString);
-
 	Class UIResponder = objc_getClass("UIResponder");
 	print_class(UIResponder);
 
@@ -76,15 +71,6 @@ int main(const int argc, char** argv) {
 	objc_registerClassPair(AppDelegate);
 	print_class(AppDelegate);
 
-	SEL stringWithUTF8String_sel = sel_registerName("stringWithUTF8String:");
-	f_stringWithUTF8String stringWithUTF8String = (f_stringWithUTF8String)objc_msgSend;
 
-	id string_AppDelegate = stringWithUTF8String((id)NSString, stringWithUTF8String_sel, "AppDelegate");
-
-	UIApplicationMain(argc, argv, nil, string_AppDelegate);
-
-	print_s("After main");
-	while (1) {}
-
-	return 0;
+	UIApplicationMain(argc, argv, nil, NSString_make("AppDelegate"));
 }
