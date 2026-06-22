@@ -25,6 +25,15 @@ void print_u32(uint32_t number) {
 #endif
 }
 
+void print_bool(const bool value) {
+	if (value) {
+		print_s("true");
+	}
+	else {
+		print_s("false");
+	}
+}
+
 void print_class(Class class) {
 #if TARGET_OS_IPHONE
 	os_log(app_log, "%s - %p", class_getName(class), class);
