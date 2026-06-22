@@ -4,18 +4,30 @@
 #include <objc/runtime.h>
 #include <os/log.h>
 
+os_log_t app_log;
+void log_init() {
+	app_log = os_log_create("69", "");
+}
 
 void print_s(const char* str) {
 #if TARGET_OS_IPHONE
-	os_log(OS_LOG_DEFAULT, "%s", str);
+	os_log(app_log, "%s", str);
 #else
 	puts(str);
 #endif
 }
 
+void print_u32(uint32_t number) {
+#if TARGET_OS_IPHONE
+	os_log(app_log, "%d", number);
+#else
+	printf("%d\n", number);
+#endif
+}
+
 void print_class(Class class) {
 #if TARGET_OS_IPHONE
-	os_log(OS_LOG_DEFAULT, "%s - %p", class_getName(class), class);
+	os_log(app_log, "%s - %p", class_getName(class), class);
 #else
 	printf("%s - %p\n", class_getName(class), class);
 #endif
@@ -23,7 +35,7 @@ void print_class(Class class) {
 
 void print_ptr(void* ptr) {
 #if TARGET_OS_IPHONE
-	os_log(OS_LOG_DEFAULT, "%p", ptr);
+	os_log(app_log, "%p", ptr);
 #else
 	printf("%p\n", ptr);
 #endif
@@ -37,4 +49,12 @@ void print_args(const int argc, char** argv) {
 	for (int i = 0; i < argc; ++i) {
 		print_s(argv[i]);
 	}
+}
+
+void print_banner() {
+	print_s("");
+	print_s("");
+	print_s("|_________________|");
+	print_s("|------START------|");
+	print_s("|-----------------|");
 }
